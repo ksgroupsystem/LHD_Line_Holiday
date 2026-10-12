@@ -578,3 +578,107 @@ select.form-control {
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+/* 登録情報クイック変更バー */
+.user-quick-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--primary-light);
+  border: 1px solid #c7eed3;
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin-bottom: 20px;
+}
+
+.user-quick-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-main);
+}
+
+.user-quick-left i {
+  color: var(--primary-color);
+  font-size: 16px;
+}
+
+.btn-quick-edit {
+  background: #ffffff;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+
+.btn-quick-edit:hover {
+  background: var(--primary-color);
+  color: #ffffff;
+}
+
+/* 履歴取消関連 */
+.history-item.is-canceled {
+  opacity: 0.65;
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.history-item.is-canceled .history-date {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.history-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border-color);
+}
+
+.history-status-badge {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.badge-status-valid {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.badge-status-canceled {
+  background: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #cbd5e1;
+}
+
+.btn-cancel-report {
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  color: #e11d48;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+
+.btn-cancel-report:hover {
+  background: #ffe4e6;
+  border-color: #fda4af;
+}

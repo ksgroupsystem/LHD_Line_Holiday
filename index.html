@@ -43,6 +43,17 @@
 
     <!-- メインコンテンツ -->
     <main class="main-content">
+      <!-- 登録情報クイック変更バー -->
+      <div id="userQuickBar" class="user-quick-bar" style="display: none;">
+        <div class="user-quick-left">
+          <i class="fa-solid fa-circle-user"></i>
+          <span><strong id="quickUserName">-</strong>（<span id="quickWorkplace">-</span>）</span>
+        </div>
+        <button type="button" id="btnQuickEditUser" class="btn-quick-edit">
+          <i class="fa-solid fa-pen-to-square"></i> 変更
+        </button>
+      </div>
+
       <form id="reportForm" onsubmit="return false;">
         <!-- 1. 連絡種別の選択 -->
         <section class="form-section">
@@ -202,6 +213,6 @@
 
   <!-- LIFF SDK -->
   <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-  <script src="app.js?v=20261012_3"></script>
+  <script src="app.js?v=20261012_4"></script>
 </body>
 </html>

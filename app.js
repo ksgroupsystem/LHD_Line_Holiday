@@ -178,6 +178,12 @@ function setupEventListeners() {
   document.getElementById('btnEditUser').addEventListener('click', () => {
     openUserModal();
   });
+  const btnQuickEdit = document.getElementById('btnQuickEditUser');
+  if (btnQuickEdit) {
+    btnQuickEdit.addEventListener('click', () => {
+      openUserModal();
+    });
+  }
 
   // ユーザー登録保存ボタン
   document.getElementById('btnSaveUser').addEventListener('click', handleSaveUser);
@@ -337,6 +343,15 @@ function updateUserUI() {
     badge.style.display = 'flex';
     nameSpan.textContent = state.registeredUser.userName;
     workplaceSpan.textContent = state.registeredUser.workplace;
+
+    const quickBar = document.getElementById('userQuickBar');
+    const quickName = document.getElementById('quickUserName');
+    const quickWorkplace = document.getElementById('quickWorkplace');
+    if (quickBar && quickName && quickWorkplace) {
+      quickBar.style.display = 'flex';
+      quickName.textContent = state.registeredUser.userName;
+      quickWorkplace.textContent = state.registeredUser.workplace;
+    }
   }
   validateForm();
 }
@@ -479,8 +494,9 @@ function renderHistory(list) {
 
   container.innerHTML = '';
   list.forEach(item => {
+    const isCanceled = (item.status === '取消済');
     const div = document.createElement('div');
-    div.className = 'history-item';
+    div.className = `history-item ${isCanceled ? 'is-canceled' : ''}`;
 
     let timeDetail = '';
     if (item.targetTime && item.targetTime !== '-') {
@@ -488,6 +504,25 @@ function renderHistory(list) {
     }
 
     const detailText = item.detail ? `<br>備考: ${escapeHtml(item.detail)}` : '';
+
+    let footerHtml = '';
+    if (isCanceled) {
+      footerHtml = `
+        <div class="history-footer">
+          <span class="history-status-badge badge-status-canceled">取消済</span>
+          <small style="color: var(--text-muted); font-size: 11px;">集計から除外されています</small>
+        </div>
+      `;
+    } else {
+      footerHtml = `
+        <div class="history-footer">
+          <span class="history-status-badge badge-status-valid">受付済</span>
+          <button type="button" class="btn-cancel-report" data-row="${item.rowIndex}">
+            <i class="fa-regular fa-trash-can"></i> 取消
+          </button>
+        </div>
+      `;
+    }
 
     div.innerHTML = `
       <div class="history-header">
@@ -497,9 +532,50 @@ function renderHistory(list) {
       <div class="history-body">
         理由: ${escapeHtml(item.reason)}${timeDetail}${detailText}
       </div>
+      ${footerHtml}
     `;
+
+    // 取消ボタンのイベント
+    if (!isCanceled) {
+      const btnCancel = div.querySelector('.btn-cancel-report');
+      if (btnCancel) {
+        btnCancel.addEventListener('click', (e) => {
+          e.stopPropagation();
+          onCancelReportClick(item);
+        });
+      }
+    }
+
     container.appendChild(div);
   });
+}
+
+// 申請取消処理
+async function onCancelReportClick(item) {
+  const confirmMsg = `【申請取消の確認】\n\n対象日: ${item.targetDate}\n区分: ${item.type}\n理由: ${item.reason}\n\nこの申請を取り消しますか？\n※取り消すと出勤率の計算からも除外され、管理者に取消通知が送信されます。`;
+  if (!confirm(confirmMsg)) {
+    return;
+  }
+
+  showLoading('申請を取り消し中...');
+  try {
+    const res = await callGasApi({
+      action: 'cancelReport',
+      userId: state.lineUserId,
+      rowIndex: item.rowIndex
+    });
+
+    if (res.status === 'success') {
+      alert('申請を取り消しました。');
+      await loadHistory();
+    } else {
+      alert('取消に失敗しました: ' + (res.message || res.error));
+    }
+  } catch (err) {
+    alert('通信エラー: ' + err.message);
+  } finally {
+    hideLoading();
+  }
 }
 
 // フォームリセット
