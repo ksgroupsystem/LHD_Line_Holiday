@@ -1,0 +1,19 @@
+{
+  "name": "lhd_line_holiday",
+  "version": "1.0.0",
+  "description": "LINE勤怠連絡システム - 遅刻・早退・休み連絡 ＆ 出勤率ダッシュボード",
+  "main": "public/app.js",
+  "scripts": {
+    "start": "npx serve public"
+  },
+  "keywords": [
+    "line",
+    "liff",
+    "gas",
+    "google-sheets",
+    "holiday",
+    "delay"
+  ],
+  "author": "",
+  "license": "MIT"
+}

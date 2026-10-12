@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>勤怠連絡フォーム | LHD</title>
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- ローディング画面 -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="spinner"></div>
+    <p id="loadingText">読み込み中...</p>
+  </div>
+
+  <div class="app-container">
+    <!-- ヘッダー -->
+    <header class="app-header">
+      <div class="header-content">
+        <div class="brand">
+          <i class="fa-solid fa-calendar-check brand-icon"></i>
+          <div>
+            <h1>勤怠連絡システム</h1>
+            <p class="subtitle">遅刻・早退・休み連絡フォーム</p>
+          </div>
+        </div>
+        <div id="userBadge" class="user-badge" style="display: none;">
+          <div class="user-info">
+            <span id="badgeUserName" class="user-name">-</span>
+            <span id="badgeWorkplace" class="workplace-name">-</span>
+          </div>
+          <button id="btnEditUser" class="btn-edit" title="登録情報を変更">
+            <i class="fa-solid fa-user-pen"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+      <form id="reportForm" onsubmit="return false;">
+        <!-- 1. 連絡種別の選択 -->
+        <section class="form-section">
+          <label class="section-label">
+            <i class="fa-solid fa-list-check"></i> 連絡の区分 <span class="badge-required">必須</span>
+          </label>
+          <div class="type-grid">
+            <button type="button" class="type-card" data-type="遅刻">
+              <i class="fa-solid fa-clock-rotate-left type-icon"></i>
+              <span class="type-title">遅刻</span>
+              <span class="type-desc">出勤が遅れる</span>
+            </button>
+            <button type="button" class="type-card" data-type="早退">
+              <i class="fa-solid fa-person-walking-arrow-right type-icon"></i>
+              <span class="type-title">早退</span>
+              <span class="type-desc">途中で退勤する</span>
+            </button>
+            <button type="button" class="type-card" data-type="欠勤">
+              <i class="fa-solid fa-bed type-icon"></i>
+              <span class="type-title">欠勤</span>
+              <span class="type-desc">体調不良・私用など</span>
+            </button>
+            <button type="button" class="type-card" data-type="有給">
+              <i class="fa-solid fa-umbrella-beach type-icon"></i>
+              <span class="type-title">有給</span>
+              <span class="type-desc">有給休暇を取得</span>
+            </button>
+          </div>
+          <input type="hidden" id="selectedType" value="">
+        </section>
+
+        <!-- 2. 対象日 -->
+        <section class="form-section">
+          <label class="section-label">
+            <i class="fa-regular fa-calendar-days"></i> 対象日 <span class="badge-required">必須</span>
+          </label>
+          <div class="date-quick-selector">
+            <button type="button" class="btn-quick-date active" data-offset="0">今日</button>
+            <button type="button" class="btn-quick-date" data-offset="1">明日</button>
+            <button type="button" class="btn-quick-date" id="btnCustomDate">日付指定</button>
+          </div>
+          <div class="custom-date-container" id="customDateContainer">
+            <input type="date" id="targetDate" class="form-control" required>
+          </div>
+        </section>
+
+        <!-- 3. 時間指定（遅刻・早退時のみ表示） -->
+        <section class="form-section" id="timeSection" style="display: none;">
+          <label class="section-label" id="timeLabel">
+            <i class="fa-regular fa-clock"></i> <span id="timeLabelText">予定時刻</span> <span class="badge-required">必須</span>
+            <small class="label-note">※15分単位</small>
+          </label>
+          <div class="select-wrapper">
+            <select id="targetTime" class="form-control">
+              <option value="">時刻を選択してください</option>
+              <!-- JSで15分刻みの選択肢を生成 -->
+            </select>
+          </div>
+        </section>
+
+        <!-- 4. 理由の選択 -->
+        <section class="form-section">
+          <label class="section-label">
+            <i class="fa-regular fa-comment-dots"></i> 理由 <span class="badge-required">必須</span>
+          </label>
+          <div class="select-wrapper">
+            <select id="reasonSelect" class="form-control" required>
+              <option value="">理由を選択してください</option>
+              <option value="体調不良">体調不良（発熱・風邪など）</option>
+              <option value="交通機関遅延">交通機関遅延（電車・バス等）</option>
+              <option value="通院・受診">通院・病院受診</option>
+              <option value="私用">私用・家庭の都合</option>
+              <option value="冠婚葬祭">冠婚葬祭</option>
+              <option value="その他">その他（具体的な理由を記入）</option>
+            </select>
+          </div>
+
+          <!-- 詳細理由・自由記述欄 -->
+          <div class="detail-container">
+            <label class="detail-label" id="detailLabel">
+              詳細理由・備考 <span id="detailRequiredBadge" class="badge-required" style="display: none;">必須</span>
+            </label>
+            <textarea id="detailReason" class="form-control textarea" rows="3" placeholder="補足事項があればご入力ください"></textarea>
+            <div id="detailErrorMsg" class="error-text" style="display: none;">
+              ※「その他」を選択した場合は、理由を必ず入力してください。
+            </div>
+          </div>
+        </section>
+
+        <!-- 送信ボタン -->
+        <div class="submit-container">
+          <button type="button" id="btnSubmit" class="btn-submit" disabled>
+            <i class="fa-solid fa-paper-plane"></i> 連絡を送信する
+          </button>
+        </div>
+      </form>
+
+      <!-- 履歴セクション -->
+      <section class="history-section">
+        <div class="history-toggle" id="historyToggle">
+          <span><i class="fa-solid fa-clock-rotate-left"></i> 最近の連絡履歴</span>
+          <i class="fa-solid fa-chevron-down toggle-icon" id="historyToggleIcon"></i>
+        </div>
+        <div class="history-list" id="historyList" style="display: none;">
+          <div class="history-empty" id="historyEmpty">履歴はありません</div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ユーザー情報 登録・編集モーダル -->
+  <div id="userModal" class="modal-overlay" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2><i class="fa-solid fa-id-card"></i> 従業員情報の登録</h2>
+      </div>
+      <div class="modal-body">
+        <p class="modal-intro">初回利用時は、ご自身の氏名と所属現場を登録してください。</p>
+        <div class="form-group">
+          <label>お名前（フルネーム） <span class="badge-required">必須</span></label>
+          <input type="text" id="inputUserName" class="form-control" placeholder="例：山田 太郎" required>
+        </div>
+        <div class="form-group">
+          <label>所属現場 <span class="badge-required">必須</span></label>
+          <div class="select-wrapper">
+            <select id="selectWorkplace" class="form-control" required>
+              <option value="">現場を選択してください</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="btnSaveUser" class="btn-modal-save">登録して始める</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 完了通知モーダル -->
+  <div id="successModal" class="modal-overlay" style="display: none;">
+    <div class="modal-card text-center">
+      <div class="success-icon-wrap">
+        <i class="fa-solid fa-circle-check"></i>
+      </div>
+      <h2>連絡を送信しました</h2>
+      <p class="success-msg">管理者に通知され、履歴に記録されました。<br>LINE公式アカウントにも確認メッセージを送信しています。</p>
+      <div class="modal-footer">
+        <button type="button" id="btnCloseSuccess" class="btn-modal-save">閉じる</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIFF SDK -->
+  <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
