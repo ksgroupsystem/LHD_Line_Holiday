@@ -333,7 +333,7 @@ function updateWorkplaceSelect() {
   state.workplaces.forEach(w => {
     const opt = document.createElement('option');
     opt.value = w.name;
-    opt.textContent = `${w.name} (月所定: ${w.days}日)`;
+    opt.textContent = w.name;
     select.appendChild(opt);
   });
 }
