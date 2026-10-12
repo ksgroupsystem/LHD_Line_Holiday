@@ -186,9 +186,7 @@
     <div class="modal-card">
       <div class="modal-header">
         <h2 id="modalTitle"><i class="fa-solid fa-id-card"></i> 従業員情報の登録</h2>
-        <button type="button" id="btnCloseUserModal" class="btn-modal-close" title="閉じる" style="display: none;">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
+        <button type="button" id="btnCloseUserModal" class="btn-modal-close" title="閉じる" aria-label="閉じる">✕</button>
       </div>
       <div class="modal-body">
         <p id="modalIntro" class="modal-intro">初回利用時は、ご自身の氏名と所属現場を登録してください。</p>
@@ -211,7 +209,8 @@
           </div>
         </div>
       </div>
-      <div class="modal-footer">
+      <div class="modal-footer modal-footer-dual">
+        <button type="button" id="btnCancelUserModal" class="btn-modal-cancel">閉じる</button>
         <button type="button" id="btnSaveUser" class="btn-modal-save">登録して始める</button>
       </div>
     </div>
@@ -233,6 +232,6 @@
 
   <!-- LIFF SDK -->
   <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-  <script src="app.js?v=20261012_6"></script>
+  <script src="app.js?v=20261012_7"></script>
 </body>
 </html>

@@ -190,18 +190,21 @@ function setupEventListeners() {
   // ユーザー登録保存ボタン
   document.getElementById('btnSaveUser').addEventListener('click', handleSaveUser);
 
-  // ユーザーモーダルを閉じる（✕ボタン ＆ 背景クリック）
+  // ユーザーモーダルを閉じる（✕ボタン ＆ 下の閉じるボタン ＆ 背景タップ）
+  const closeUserModalFn = () => {
+    document.getElementById('userModal').style.display = 'none';
+  };
   const btnCloseUserModal = document.getElementById('btnCloseUserModal');
-  if (btnCloseUserModal) {
-    btnCloseUserModal.addEventListener('click', () => {
-      document.getElementById('userModal').style.display = 'none';
-    });
-  }
+  if (btnCloseUserModal) btnCloseUserModal.addEventListener('click', closeUserModalFn);
+
+  const btnCancelUserModal = document.getElementById('btnCancelUserModal');
+  if (btnCancelUserModal) btnCancelUserModal.addEventListener('click', closeUserModalFn);
+
   const userModal = document.getElementById('userModal');
   if (userModal) {
     userModal.addEventListener('click', (e) => {
-      if (e.target === userModal && state.registeredUser) {
-        userModal.style.display = 'none';
+      if (e.target === userModal) {
+        closeUserModalFn();
       }
     });
   }
@@ -385,10 +388,10 @@ function openUserModal() {
   const selectWorkplace = document.getElementById('selectWorkplace');
 
   const btnCloseUserModal = document.getElementById('btnCloseUserModal');
+  if (btnCloseUserModal) btnCloseUserModal.style.display = 'flex';
 
   if (state.registeredUser && state.registeredUser.userName) {
-    // 編集モード（✕ボタンを表示）
-    if (btnCloseUserModal) btnCloseUserModal.style.display = 'flex';
+    // 編集モード
     if (modalTitle) modalTitle.innerHTML = '<i class="fa-solid fa-user-pen"></i> 登録情報の変更';
     if (modalIntro) modalIntro.textContent = '氏名や所属現場の変更内容を入力し、「変更を保存する」を押してください。';
     if (btnSaveUser) btnSaveUser.textContent = '変更を保存する';
@@ -398,8 +401,7 @@ function openUserModal() {
     inputFirstName.value = parts.slice(1).join(' ') || '';
     selectWorkplace.value = state.registeredUser.workplace || '';
   } else {
-    // 初回登録モード（✕ボタンを非表示）
-    if (btnCloseUserModal) btnCloseUserModal.style.display = 'none';
+    // 初回登録モード
     if (modalTitle) modalTitle.innerHTML = '<i class="fa-solid fa-id-card"></i> 従業員情報の初回登録';
     if (modalIntro) modalIntro.textContent = '初回利用時は、ご自身の氏名と所属現場を登録してください。';
     if (btnSaveUser) btnSaveUser.textContent = '登録して始める';
