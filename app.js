@@ -359,11 +359,21 @@ function updateUserUI() {
   const badge = document.getElementById('userBadge');
   const nameSpan = document.getElementById('badgeUserName');
   const workplaceSpan = document.getElementById('badgeWorkplace');
+  const contractSpan = document.getElementById('badgeContractType');
 
   if (state.registeredUser) {
     badge.style.display = 'flex';
     nameSpan.textContent = state.registeredUser.userName;
     workplaceSpan.textContent = state.registeredUser.workplace;
+
+    if (contractSpan) {
+      if (state.registeredUser.contractType) {
+        contractSpan.textContent = state.registeredUser.contractType;
+        contractSpan.style.display = 'inline-block';
+      } else {
+        contractSpan.style.display = 'none';
+      }
+    }
 
     const quickBar = document.getElementById('userQuickBar');
     const quickName = document.getElementById('quickUserName');
@@ -386,6 +396,7 @@ function openUserModal() {
   const inputLastName = document.getElementById('inputLastName');
   const inputFirstName = document.getElementById('inputFirstName');
   const selectWorkplace = document.getElementById('selectWorkplace');
+  const selectContractType = document.getElementById('selectContractType');
 
   const btnCloseUserModal = document.getElementById('btnCloseUserModal');
   if (btnCloseUserModal) btnCloseUserModal.style.display = 'flex';
@@ -393,17 +404,20 @@ function openUserModal() {
   if (state.registeredUser && state.registeredUser.userName) {
     // 編集モード
     if (modalTitle) modalTitle.innerHTML = '<i class="fa-solid fa-user-pen"></i> 登録情報の変更';
-    if (modalIntro) modalIntro.textContent = '氏名や所属現場の変更内容を入力し、「変更を保存する」を押してください。';
+    if (modalIntro) modalIntro.textContent = '氏名、所属現場、契約形態の変更内容を入力し、「変更を保存する」を押してください。';
     if (btnSaveUser) btnSaveUser.textContent = '変更を保存する';
 
     const parts = state.registeredUser.userName.split(/[\s　]+/);
     inputLastName.value = parts[0] || '';
     inputFirstName.value = parts.slice(1).join(' ') || '';
     selectWorkplace.value = state.registeredUser.workplace || '';
+    if (selectContractType) {
+      selectContractType.value = state.registeredUser.contractType || '';
+    }
   } else {
     // 初回登録モード
     if (modalTitle) modalTitle.innerHTML = '<i class="fa-solid fa-id-card"></i> 従業員情報の初回登録';
-    if (modalIntro) modalIntro.textContent = '初回利用時は、ご自身の氏名と所属現場を登録してください。';
+    if (modalIntro) modalIntro.textContent = '初回利用時は、ご自身の氏名、所属現場、契約形態を登録してください。';
     if (btnSaveUser) btnSaveUser.textContent = '登録して始める';
 
     if (state.lineDisplayName) {
@@ -419,6 +433,7 @@ function openUserModal() {
       inputLastName.value = '';
       inputFirstName.value = '';
     }
+    if (selectContractType) selectContractType.value = '';
   }
 
   modal.style.display = 'flex';
@@ -428,6 +443,8 @@ async function handleSaveUser() {
   const lastName = document.getElementById('inputLastName').value.trim();
   const firstName = document.getElementById('inputFirstName').value.trim();
   const workplace = document.getElementById('selectWorkplace').value;
+  const selectContractType = document.getElementById('selectContractType');
+  const contractType = selectContractType ? selectContractType.value : '';
 
   if (!lastName || !firstName) {
     alert('姓（名字）とお名前を両方とも必ず入力してください。');
@@ -435,6 +452,10 @@ async function handleSaveUser() {
   }
   if (!workplace) {
     alert('所属現場を選択してください。');
+    return;
+  }
+  if (!contractType) {
+    alert('契約形態（派遣・業務委託・正社員）を選択してください。');
     return;
   }
 
@@ -448,7 +469,8 @@ async function handleSaveUser() {
       userId: state.lineUserId,
       displayName: state.lineDisplayName,
       userName: userName,
-      workplace: workplace
+      workplace: workplace,
+      contractType: contractType
     });
 
     if (res.status === 'success' || !res.error) {
@@ -456,7 +478,8 @@ async function handleSaveUser() {
         userId: state.lineUserId,
         displayName: state.lineDisplayName,
         userName: userName,
-        workplace: workplace
+        workplace: workplace,
+        contractType: contractType
       };
       updateUserUI();
       document.getElementById('userModal').style.display = 'none';
@@ -484,6 +507,7 @@ async function handleSubmit() {
     userId: state.lineUserId,
     userName: state.registeredUser.userName,
     workplace: state.registeredUser.workplace,
+    contractType: state.registeredUser.contractType || '',
     type: state.selectedType,
     targetDate: state.targetDate,
     targetTime: state.targetTime || '',

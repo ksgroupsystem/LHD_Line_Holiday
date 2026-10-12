@@ -104,7 +104,14 @@ body {
   display: flex;
   flex-direction: column;
   text-align: right;
-  line-height: 1.2;
+  line-height: 1.25;
+}
+
+.user-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
 }
 
 .user-name {
@@ -117,11 +124,21 @@ body {
   text-overflow: ellipsis;
 }
 
+.badge-contract-type {
+  font-size: 9px;
+  font-weight: 700;
+  background: #e2e8f0;
+  color: #334155;
+  padding: 1px 5px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
 .workplace-name {
   font-size: 10px;
   color: var(--primary-hover);
   font-weight: 600;
-  max-width: 90px;
+  max-width: 120px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
