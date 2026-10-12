@@ -161,9 +161,15 @@
       </div>
       <div class="modal-body">
         <p class="modal-intro">初回利用時は、ご自身の氏名と所属現場を登録してください。</p>
-        <div class="form-group">
-          <label>お名前（フルネーム） <span class="badge-required">必須</span></label>
-          <input type="text" id="inputUserName" class="form-control" placeholder="例：山田 太郎" required>
+        <div class="name-grid">
+          <div class="form-group">
+            <label>姓（名字） <span class="badge-required">必須</span></label>
+            <input type="text" id="inputLastName" class="form-control" placeholder="例：山田" required>
+          </div>
+          <div class="form-group">
+            <label>名（お名前） <span class="badge-required">必須</span></label>
+            <input type="text" id="inputFirstName" class="form-control" placeholder="例：太郎" required>
+          </div>
         </div>
         <div class="form-group">
           <label>所属現場 <span class="badge-required">必須</span></label>

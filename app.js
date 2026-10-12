@@ -355,31 +355,48 @@ function updateUserUI() {
 // ユーザー情報登録モーダル
 function openUserModal() {
   const modal = document.getElementById('userModal');
-  const inputName = document.getElementById('inputUserName');
+  const inputLastName = document.getElementById('inputLastName');
+  const inputFirstName = document.getElementById('inputFirstName');
   const selectWorkplace = document.getElementById('selectWorkplace');
 
-  if (state.registeredUser) {
-    inputName.value = state.registeredUser.userName || '';
+  if (state.registeredUser && state.registeredUser.userName) {
+    const parts = state.registeredUser.userName.split(/[\s　]+/);
+    inputLastName.value = parts[0] || '';
+    inputFirstName.value = parts.slice(1).join(' ') || '';
     selectWorkplace.value = state.registeredUser.workplace || '';
+  } else if (state.lineDisplayName) {
+    const parts = state.lineDisplayName.split(/[\s　]+/);
+    if (parts.length > 1) {
+      inputLastName.value = parts[0];
+      inputFirstName.value = parts.slice(1).join(' ');
+    } else {
+      inputLastName.value = state.lineDisplayName;
+      inputFirstName.value = '';
+    }
   } else {
-    inputName.value = state.lineDisplayName || '';
+    inputLastName.value = '';
+    inputFirstName.value = '';
   }
 
   modal.style.display = 'flex';
 }
 
 async function handleSaveUser() {
-  const userName = document.getElementById('inputUserName').value.trim();
+  const lastName = document.getElementById('inputLastName').value.trim();
+  const firstName = document.getElementById('inputFirstName').value.trim();
   const workplace = document.getElementById('selectWorkplace').value;
 
-  if (!userName) {
-    alert('お名前を入力してください。');
+  if (!lastName || !firstName) {
+    alert('姓（名字）とお名前を両方とも必ず入力してください。');
     return;
   }
   if (!workplace) {
     alert('所属現場を選択してください。');
     return;
   }
+
+  // 姓と名の間に半角スペースを入れてフルネーム化
+  const userName = `${lastName} ${firstName}`;
 
   showLoading('登録情報を保存中...');
   try {
