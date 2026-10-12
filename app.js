@@ -150,15 +150,8 @@ function setupEventListeners() {
   reasonSelect.addEventListener('change', (e) => {
     const val = e.target.value;
     state.reason = val;
-
-    if (val === 'その他') {
-      detailRequiredBadge.style.display = 'inline-block';
-      detailReason.placeholder = '※その他の場合は具体的な理由を必ずご記入ください（必須）';
-    } else {
-      detailRequiredBadge.style.display = 'none';
-      detailReason.placeholder = '補足事項があればご入力ください（任意）';
-      detailErrorMsg.style.display = 'none';
-    }
+    // 詳細理由は常時必須のためplaceholderは固定
+    detailReason.placeholder = '理由や状況の詳細を具体的にご入力ください（必須）';
     validateForm();
   });
 
@@ -236,15 +229,11 @@ function validateForm() {
     return false;
   }
 
-  // 6. 「その他」選択時は理由詳細が必須
-  if (state.reason === 'その他') {
-    if (!state.detail || state.detail.trim() === '') {
-      detailErrorMsg.style.display = 'block';
-      btnSubmit.disabled = true;
-      return false;
-    } else {
-      detailErrorMsg.style.display = 'none';
-    }
+  // 6. 詳細理由・備考は常に必須
+  if (!state.detail || state.detail.trim() === '') {
+    detailErrorMsg.style.display = 'block';
+    btnSubmit.disabled = true;
+    return false;
   } else {
     detailErrorMsg.style.display = 'none';
   }
