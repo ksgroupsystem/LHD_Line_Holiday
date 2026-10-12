@@ -174,13 +174,15 @@ function setupEventListeners() {
     toggleIcon.classList.toggle('open', isClosed);
   });
 
-  // ユーザー情報変更ボタン
-  document.getElementById('btnEditUser').addEventListener('click', () => {
-    openUserModal();
-  });
-  const btnQuickEdit = document.getElementById('btnQuickEditUser');
-  if (btnQuickEdit) {
-    btnQuickEdit.addEventListener('click', () => {
+  // ユーザー情報変更ボタン（ヘッダー右上）
+  const userBadge = document.getElementById('userBadge');
+  if (userBadge) {
+    userBadge.addEventListener('click', openUserModal);
+  }
+  const btnEditUser = document.getElementById('btnEditUser');
+  if (btnEditUser) {
+    btnEditUser.addEventListener('click', (e) => {
+      e.stopPropagation();
       openUserModal();
     });
   }
@@ -356,30 +358,45 @@ function updateUserUI() {
   validateForm();
 }
 
-// ユーザー情報登録モーダル
+// ユーザー情報登録・編集モーダル
 function openUserModal() {
   const modal = document.getElementById('userModal');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalIntro = document.getElementById('modalIntro');
+  const btnSaveUser = document.getElementById('btnSaveUser');
   const inputLastName = document.getElementById('inputLastName');
   const inputFirstName = document.getElementById('inputFirstName');
   const selectWorkplace = document.getElementById('selectWorkplace');
 
   if (state.registeredUser && state.registeredUser.userName) {
+    // 編集モード
+    if (modalTitle) modalTitle.innerHTML = '<i class="fa-solid fa-user-pen"></i> 登録情報の変更';
+    if (modalIntro) modalIntro.textContent = '氏名や所属現場の変更内容を入力し、「変更を保存する」を押してください。';
+    if (btnSaveUser) btnSaveUser.textContent = '変更を保存する';
+
     const parts = state.registeredUser.userName.split(/[\s　]+/);
     inputLastName.value = parts[0] || '';
     inputFirstName.value = parts.slice(1).join(' ') || '';
     selectWorkplace.value = state.registeredUser.workplace || '';
-  } else if (state.lineDisplayName) {
-    const parts = state.lineDisplayName.split(/[\s　]+/);
-    if (parts.length > 1) {
-      inputLastName.value = parts[0];
-      inputFirstName.value = parts.slice(1).join(' ');
+  } else {
+    // 初回登録モード
+    if (modalTitle) modalTitle.innerHTML = '<i class="fa-solid fa-id-card"></i> 従業員情報の初回登録';
+    if (modalIntro) modalIntro.textContent = '初回利用時は、ご自身の氏名と所属現場を登録してください。';
+    if (btnSaveUser) btnSaveUser.textContent = '登録して始める';
+
+    if (state.lineDisplayName) {
+      const parts = state.lineDisplayName.split(/[\s　]+/);
+      if (parts.length > 1) {
+        inputLastName.value = parts[0];
+        inputFirstName.value = parts.slice(1).join(' ');
+      } else {
+        inputLastName.value = state.lineDisplayName;
+        inputFirstName.value = '';
+      }
     } else {
-      inputLastName.value = state.lineDisplayName;
+      inputLastName.value = '';
       inputFirstName.value = '';
     }
-  } else {
-    inputLastName.value = '';
-    inputFirstName.value = '';
   }
 
   modal.style.display = 'flex';
@@ -467,7 +484,7 @@ async function handleSubmit() {
   }
 }
 
-// 履歴読み込み
+// 履歴読み込み & 当月サマリー反映
 async function loadHistory() {
   if (!state.lineUserId) return;
 
@@ -477,8 +494,21 @@ async function loadHistory() {
       userId: state.lineUserId
     });
 
-    if (res.status === 'success' && res.history) {
-      renderHistory(res.history);
+    if (res.status === 'success') {
+      if (res.history) {
+        renderHistory(res.history);
+      }
+      if (res.monthlyStats) {
+        const card = document.getElementById('monthlySummaryCard');
+        if (card) card.style.display = 'block';
+        const label = document.getElementById('currentMonthLabel');
+        if (label) label.textContent = res.monthlyStats.monthLabel || '今月';
+        
+        document.getElementById('statLateCount').textContent = res.monthlyStats.late || 0;
+        document.getElementById('statEarlyCount').textContent = res.monthlyStats.early || 0;
+        document.getElementById('statAbsentCount').textContent = res.monthlyStats.absent || 0;
+        document.getElementById('statPaidCount').textContent = res.monthlyStats.paid || 0;
+      }
     }
   } catch (err) {
     console.error('History load error:', err);

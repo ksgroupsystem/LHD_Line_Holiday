@@ -87,41 +87,150 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: var(--bg-color);
-  padding: 6px 12px;
+  background: var(--primary-light);
+  padding: 5px 10px;
   border-radius: 20px;
-  border: 1px solid var(--border-color);
+  border: 1px solid #c7eed3;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.user-badge:hover {
+  background: #def7e5;
+  border-color: var(--primary-color);
 }
 
 .user-info {
   display: flex;
   flex-direction: column;
   text-align: right;
+  line-height: 1.2;
 }
 
 .user-name {
   font-size: 12px;
   font-weight: 700;
   color: var(--text-main);
+  max-width: 90px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .workplace-name {
   font-size: 10px;
-  color: var(--text-muted);
+  color: var(--primary-hover);
+  font-weight: 600;
+  max-width: 90px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.btn-edit {
-  background: none;
-  border: none;
-  color: var(--text-muted);
+.btn-badge-edit {
+  background: #ffffff;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  border-radius: 12px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 700;
   cursor: pointer;
-  font-size: 13px;
-  padding: 2px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
-.btn-edit:hover {
+.btn-badge-edit:hover {
+  background: var(--primary-color);
+  color: #ffffff;
+}
+
+/* 当月の申請状況サマリーカード */
+.monthly-summary-card {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.monthly-summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.monthly-summary-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.monthly-summary-title i {
   color: var(--primary-color);
 }
+
+.current-month-badge {
+  background: #e2e8f0;
+  color: #475569;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.summary-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.stat-pill {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 8px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.stat-value {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.stat-value strong {
+  font-size: 17px;
+}
+
+.stat-value small {
+  font-size: 10px;
+  font-weight: normal;
+  margin-left: 1px;
+  color: var(--text-muted);
+}
+
+.stat-late .stat-value strong { color: var(--accent-late); }
+.stat-early .stat-value strong { color: var(--accent-early); }
+.stat-absent .stat-value strong { color: var(--accent-absent); }
+.stat-paid .stat-value strong { color: var(--accent-paid); }
 
 /* メインコンテンツ */
 .main-content {

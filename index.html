@@ -29,13 +29,13 @@
             <p class="subtitle">遅刻・早退・休み連絡フォーム</p>
           </div>
         </div>
-        <div id="userBadge" class="user-badge" style="display: none;">
+        <div id="userBadge" class="user-badge" style="display: none;" title="タップして登録情報を変更">
           <div class="user-info">
             <span id="badgeUserName" class="user-name">-</span>
             <span id="badgeWorkplace" class="workplace-name">-</span>
           </div>
-          <button id="btnEditUser" class="btn-edit" title="登録情報を変更">
-            <i class="fa-solid fa-user-pen"></i>
+          <button type="button" id="btnEditUser" class="btn-badge-edit">
+            <i class="fa-solid fa-pen-to-square"></i> 変更
           </button>
         </div>
       </div>
@@ -43,16 +43,33 @@
 
     <!-- メインコンテンツ -->
     <main class="main-content">
-      <!-- 登録情報クイック変更バー -->
-      <div id="userQuickBar" class="user-quick-bar" style="display: none;">
-        <div class="user-quick-left">
-          <i class="fa-solid fa-circle-user"></i>
-          <span><strong id="quickUserName">-</strong>（<span id="quickWorkplace">-</span>）</span>
+      <!-- 当月の申請状況サマリーカード -->
+      <section class="monthly-summary-card" id="monthlySummaryCard" style="display: none;">
+        <div class="monthly-summary-header">
+          <span class="monthly-summary-title">
+            <i class="fa-solid fa-chart-pie"></i> 今月のあなたの申請状況
+          </span>
+          <span id="currentMonthLabel" class="current-month-badge">今月</span>
         </div>
-        <button type="button" id="btnQuickEditUser" class="btn-quick-edit">
-          <i class="fa-solid fa-pen-to-square"></i> 変更
-        </button>
-      </div>
+        <div class="summary-stats-grid">
+          <div class="stat-pill stat-late">
+            <span class="stat-label">遅刻</span>
+            <span class="stat-value"><strong id="statLateCount">0</strong><small>回</small></span>
+          </div>
+          <div class="stat-pill stat-early">
+            <span class="stat-label">早退</span>
+            <span class="stat-value"><strong id="statEarlyCount">0</strong><small>回</small></span>
+          </div>
+          <div class="stat-pill stat-absent">
+            <span class="stat-label">欠勤</span>
+            <span class="stat-value"><strong id="statAbsentCount">0</strong><small>日</small></span>
+          </div>
+          <div class="stat-pill stat-paid">
+            <span class="stat-label">有給</span>
+            <span class="stat-value"><strong id="statPaidCount">0</strong><small>日</small></span>
+          </div>
+        </div>
+      </section>
 
       <form id="reportForm" onsubmit="return false;">
         <!-- 1. 連絡種別の選択 -->
@@ -168,10 +185,10 @@
   <div id="userModal" class="modal-overlay" style="display: none;">
     <div class="modal-card">
       <div class="modal-header">
-        <h2><i class="fa-solid fa-id-card"></i> 従業員情報の登録</h2>
+        <h2 id="modalTitle"><i class="fa-solid fa-id-card"></i> 従業員情報の登録</h2>
       </div>
       <div class="modal-body">
-        <p class="modal-intro">初回利用時は、ご自身の氏名と所属現場を登録してください。</p>
+        <p id="modalIntro" class="modal-intro">初回利用時は、ご自身の氏名と所属現場を登録してください。</p>
         <div class="name-grid">
           <div class="form-group">
             <label>姓（名字） <span class="badge-required">必須</span></label>
@@ -213,6 +230,6 @@
 
   <!-- LIFF SDK -->
   <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-  <script src="app.js?v=20261012_4"></script>
+  <script src="app.js?v=20261012_5"></script>
 </body>
 </html>
